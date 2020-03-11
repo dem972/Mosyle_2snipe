@@ -25,7 +25,8 @@ class Snipe:
 			"name": model,
             "category_id": 2,
             "manufacturer_id": 1,
-            "model_number": model
+            "model_number": model,
+            "fieldset_id": 2
         }
 
         return requests.request("POST", self.url + "/models", json = payload, headers = self.headers)
@@ -64,8 +65,10 @@ class Snipe:
     def unasigneAsset(self, asset_id):
         return requests.request("POST", self.url + "/hardware/" + str(asset_id) + "/checkin", headers = self.headers )
 
-    def updateAsset(self, asset_id, mac_adress, available_disk, osversion, percentdisk):
+    def updateAsset(self, asset_id, asset, mac_adress, available_disk, osversion, percentdisk):
         payload = {
+            "asset_tag": asset,
+            "name": asset,
             "_snipeit_mac_address_1": mac_adress,
             "_snipeit_available_disk_5": available_disk + " GB",
             "_snipeit_osversion_4": osversion,
@@ -73,12 +76,15 @@ class Snipe:
         }
         return requests.request("PATCH", self.url + "/hardware/" + str(asset_id), json = payload, headers = self.headers)
 
-
-
-    
-
-
-
+    def createMobileModel(self, model):
+        payload = {
+			"name": model,
+            "category_id": 5,
+            "manufacturer_id": 1,
+            "model_number": model,
+            "fieldset_id": 2
+        }
+        return requests.request("POST", self.url + "/models", json = payload, headers = self.headers)
 
 
 
