@@ -8,8 +8,6 @@ from snipe import Snipe
 
 # Converts datetime to timestamp for Mosyle
 ts = datetime.datetime.now().timestamp() - 200
-tstest = datetime.datetime.now().timestamp()
-
 
 # Set some Variables from the settings.conf:
 config = configparser.ConfigParser()
@@ -28,7 +26,9 @@ calltype = config['mosyle']['calltype']
 
 mosyle_response = mosyle.list().json()
 if calltype == "timestamp":
-    mosyle_response = mosyle.listTimestamp(ts, ts)
+    mosyle_response = mosyle.listTimestamp(ts, ts).json()
+    
+    
 
 # Set the token for Snipe It 
 snipe = Snipe(apiKey)
@@ -40,12 +40,9 @@ for sn in mosyle_response['response'][0]['devices']:
     model = snipe.searchModel(sn['device_model']).json()
     mosyle_user = mosyle.listuser(sn['idusermosyle']).json()
 
-    print(mosyle_user['response'][0]['users'][0]['identifier'])
-    print(sn['serial_number'])
-
     if mosyle_response['response'] == "status":
         exit(1)
-
+    
     # Create the asset model if is not exist
     if model['total'] == 0:
         if sn['os'] == "mac":
@@ -65,55 +62,25 @@ for sn in mosyle_response['response'][0]['devices']:
             snipe.assignAsset(mosyle_user['response'][0]['users'][0]['identifier'], asset['payload']['id'])
         continue
         
-
     # Update existing Devices
+
     if asset['total'] == 1:
         #f"{x:.2f}"
         snipe.updateAsset(asset['rows'][0]['id'], sn['device_name'], sn['wifi_mac_address'], str(float(sn['available_disk'])), sn['osversion'], str(float(sn['total_disk'])))
         
-    # Check the asset assignement state 
-    if asset['rows'][0]['assigned_to'] == None:
-            
+    # Check the asset assignement state
+     
+    if asset['rows'][0]['assigned_to'] == None and sn['idusermosyle'] != None:
             snipe.assignAsset(mosyle_user['response'][0]['users'][0]['identifier'], asset['rows'][0]['id'])
-            
-    elif asset['rows'][0]['assigned_to']['username'] == mosyle_user['response'][0]['users'][0]['identifier']:
-        continue
+            continue
 
     elif sn['idusermosyle'] == None:
+        snipe.unasigneAsset(asset['rows'][0]['id'])
+        continue
+            
+    elif asset['rows'][0]['assigned_to']['username'] == mosyle_user['response'][0]['users'][0]['identifier']:
         continue
 
     elif asset['rows'][0]['assigned_to']['username'] != sn['idusermosyle']:
         snipe.unasigneAsset(asset['rows'][0]['id'])
         snipe.assignAsset(mosyle_user['response'][0]['users'][0]['identifier'], asset['rows'][0]['id'])
-
-
-
-
-   
-   
-
-
-
-       
-
-
-
-    
-
-
-
-
-
-            
-  
-
-
-            
-
-
-
-
-
-    
-
-
