@@ -10,9 +10,10 @@ Calltype is used for the mosyle device call :
       Timestamp call the latests enrolled device and add them to Mosyle
 
 [snipe-it]
-    Snipe url is your used snipe it url 
-    generate the api key from the snipe it seetings and copy it to this section
-    manufacturer id indicate the manufacturer from snipe it should be the id of Apple manufacturer
+
+Snipe url is your used snipe it url 
+generate the api key from the snipe it seetings and copy it to this section
+manufacturer id indicate the manufacturer from snipe it should be the id of Apple manufacturer
 
 
 
