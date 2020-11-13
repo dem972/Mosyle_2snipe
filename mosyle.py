@@ -43,7 +43,7 @@ class Mosyle:
 	def listuser(self, iduser):
 		params = {
 			"operation": "list_users",
-			"options": { "idusers": [iduser]
+			"options": { "identifiers": [iduser]
 				}
 		}
 		return self.request.post(self.url + "/users", json = params )
